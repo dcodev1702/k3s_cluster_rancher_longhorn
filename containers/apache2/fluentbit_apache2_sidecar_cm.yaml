@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluent-bit-sidecar-config
+  namespace: bind9-logstash
+  labels:
+    app: apache2-web
+data:
+  # Configuration files: server, input, filters and output
+  # ======================================================
+  fluent-bit.conf: |
+    [SERVICE]
+        Flush         1
+        Log_Level     info
+        Daemon        off
+        Parsers_File  parsers.conf
+    @INCLUDE input-tomcat-accesslog.conf
+    @INCLUDE filter-stdout.conf
+    @INCLUDE output-stdout.conf
+  input-tomcat-accesslog.conf: |
+    [INPUT]
+        Name              tail
+        Tag               apache2
+        Path              /var/log/apache2/*.log
+        Parser            apache2
+        DB                /var/log/flb_accesslog.db
+        Mem_Buf_Limit     5MB
+        Refresh_Interval  10
+  filter-stdout.conf: |
+    [FILTER]
+        Name           stdout
+        Match            *
+  output-stdout.conf: |
+    [OUTPUT]
+        Name           null
+        Match           *
+  parsers.conf: |
+    [PARSER]
+        Name        apache2
+        Format      regex
+        Regex       ^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\s-\s-\s\[(\d{2}/[a-zA-Z]{3}/\d{4}):(\d{2}:\d{2}:\d{2}\s[+-]\d{4})\]\s"([A-Z]+)\s(.*?)\s(HTTP/\d\.\d)"\s(\d{3})\s(\d+)$
+        Time_Key    time
+        Time_Format %d/%b/%Y:%H:%M:%S %z
+        
+# https://kubernetes.io/docs/concepts/configuration/configmap/
+immutable: true

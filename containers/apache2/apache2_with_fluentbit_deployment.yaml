@@ -1,0 +1,91 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: apache2-web
+    app.kubernetes.io/instance: apache2-web
+    app.kubernetes.io/name: apache2-web
+  name: apache2-web
+  namespace: bind9-logstash
+spec:
+  ports:
+  - name: apache2-http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: apache2-web
+  externalTrafficPolicy: Cluster
+  loadBalancerIP: 192.168.10.57
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: apache2-web
+    app.kubernetes.io/instance: apache2-web
+    app.kubernetes.io/name: apache2-web
+  name: apache2-web
+  namespace: bind9-logstash
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apache2-web
+  template:
+    metadata:
+      labels:
+        app: apache2-web
+        app.kubernetes.io/name: apache2-web
+    spec:
+      nodeSelector:
+        worker: "true"
+      containers:
+      - name: apache2-web
+        image: ubuntu/apache2:2.4-22.04_beta
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: TZ
+          value: "America/New_York"
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        volumeMounts:
+        - name: apache2-logs
+          mountPath: /etc/apache2/apache2.conf
+          subPath: apache2_configs/apache2.conf
+        - name: apache2-logs
+          mountPath: /var/log/apache2
+          subPath: apache2_logs
+        resources:
+          limits:
+            cpu: "0.5"
+            memory: "256Mi"
+          requests:
+            cpu: "0.2"
+            memory: "256Mi"
+      - name: fluent-bit
+        image: fluent/fluent-bit
+        imagePullPolicy: Always
+        env:
+        - name: FLAG
+          value: "ALL_YOUR_BITS_ARE_SHIPPED_BY_US!"
+        volumeMounts:
+        - name: apache2-logs
+          mountPath: /var/log/apache2
+          subPath: apache2_logs
+          readOnly: true
+        - name: fluent-bit-config
+          mountPath: /fluent-bit/etc/
+          readOnly: true
+      terminationGracePeriodSeconds: 10
+      restartPolicy: Always
+      volumes:
+      - name: apache2-logs
+        persistentVolumeClaim:
+          claimName: apache2-logs
+      - name: fluent-bit-config
+        configMap:
+          name: fluent-bit-sidecar-config

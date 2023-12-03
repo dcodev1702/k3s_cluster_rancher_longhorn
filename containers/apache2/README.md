@@ -29,3 +29,6 @@
    sudo umount /tmp/folder
    ```
  * Go to Longhorn and detach the volume and leave it in an detached state as it will be autoamtically mounted whenever the manifest (apache2_deployment.yaml) is applied via kubectl
+ * Create a PV/PVC on that volume in Longhorn.  Be mindful and ensure you add the correct namespace (namespace must already exist)
+ ![image](https://github.com/dcodev1702/k3s_cluster_rancher_longhorn/assets/32214072/b11a06c5-3717-4e1e-abd1-5b72385a9189)
+

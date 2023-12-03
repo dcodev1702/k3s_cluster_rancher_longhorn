@@ -35,6 +35,7 @@
  * Provision the containerized workload!
    ```console
    kubectl apply -f ./apache2_deployment.yaml
+   kubectl apply -f ./apache2_with_fluentbit_deployment.yaml
    ```
 
 Helpful Commands: <br />

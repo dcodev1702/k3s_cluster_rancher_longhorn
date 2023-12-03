@@ -42,7 +42,7 @@ Helpful Commands: <br />
 kubectl get pods -n bind9-logstash
 ```
 ```console
-kubectl exec -it -n bind9-logstash apache2-web-85d5479df-ftgw6 /bin/bas
+kubectl exec -it -n bind9-logstash apache2-web-<RANDOM_STRING> /bin/bash
 ```
 ```console
 kubectl delete -f ./apache2_deployment.yaml

@@ -53,3 +53,6 @@ kubectl delete -f ./apache2_deployment.yaml
 ```console
 kubectl -n bind9-logstash describe pod apache2-web
 ```
+
+## Apache2 containerized workload w/ Fluentbit sidecar
+![image](https://github.com/dcodev1702/k3s_cluster_rancher_longhorn/assets/32214072/1f75646a-014e-49ee-a884-28044ed02aa1)

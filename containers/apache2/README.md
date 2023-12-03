@@ -32,3 +32,21 @@
  * Create a PV/PVC on that volume in Longhorn.  Be mindful and ensure you add the correct namespace (namespace must already exist)
  ![image](https://github.com/dcodev1702/k3s_cluster_rancher_longhorn/assets/32214072/b11a06c5-3717-4e1e-abd1-5b72385a9189)
 
+ * Provision the containerized workload!
+   ```console
+   kubectl apply -f ./apache2_deployment.yaml
+   ```
+
+Helpful Commands: <br />
+```console
+kubectl get pods -n bind9-logstash
+```
+```console
+kubectl exec -it -n bind9-logstash apache2-web-85d5479df-ftgw6 /bin/bas
+```
+```console
+kubectl delete -f ./apache2_deployment.yaml
+```
+```console
+kubectl -n bind9-logstash describe pod apache2-web
+```

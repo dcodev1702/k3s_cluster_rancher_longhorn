@@ -67,14 +67,6 @@ spec:
             cpu: "0.2"
             memory: "256Mi"
       restartPolicy: Always
-    #  volumes:
-    #  - name: local
-    #    hostPath:
-    #      path: /usr/local/k3s_containers/apache2-conf/apache2.conf
-    #  - name: log-volume
-    #    hostPath: 
-    #      path: /usr/local/k3s_containers/apache2-conf/logs
-    #      type: DirectoryOrCreate
       volumes:
       - name: apache2-logs
         persistentVolumeClaim:

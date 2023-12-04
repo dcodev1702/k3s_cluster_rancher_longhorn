@@ -26,13 +26,13 @@ metadata:
   namespace: react-clock
 spec:
   selector:
-      matchLabels:
-        app: react-clock-basic
+    matchLabels:
+      app: react-clock-basic
   replicas: 1
   template:
-      metadata:
-        labels:
-            app: react-clock-basic
+    metadata:
+      labels:
+        app: react-clock-basic
       spec:
         nodeSelector:
           worker: "true"
